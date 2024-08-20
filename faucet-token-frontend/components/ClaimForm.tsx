@@ -31,10 +31,10 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ ethereumAddress }) => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverError = error.response?.data?.error;
-        if (serverError === "Faucet claim already made for this CosmosHub address") {
-            setError("Faucet claim already made for this CosmosHub address.");
+        if (serverError) {
+          setError(serverError); // Set the server error message to display on the frontend
         } else {
-            setError("Please verify the CosmosHub address provided is a Simply Staking delegator and MetaMask is connected.");
+          setError("An unexpected error occurred. Please try again.");
         }
       } else {
         setError("An unexpected error occurred. Please try again.");

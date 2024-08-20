@@ -108,7 +108,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   header: {
     fontSize: '1.8rem',
     fontWeight: '600',
-    color: '#00153F', // Oxford Blue
+    color: '#000000',
     marginBottom: '20px',
   },
   error: {
@@ -142,7 +142,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: '500',
     wordWrap: 'break-word',
     overflowWrap: 'break-word',
-    width: '100%',  // Match the fixed width
+    width: '100%', 
     textAlign: 'center',
   },
 };

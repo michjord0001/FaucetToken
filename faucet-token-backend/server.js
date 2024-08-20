@@ -46,7 +46,7 @@ app.post('/faucet', async (req, res) => {
     try {
         const isDelegator = await validateDelegator(cosmosHubAddress);
         if (!isDelegator) {
-            return res.status(400).json({ error: 'The provided CosmosHub address is not a Simply Staking delegator.' });
+            return res.status(400).json({ error: 'This CosmosHub address is not a Simply Staking delegator.' });
         }
     } catch (error) {
         return res.status(500).json({ error: error.message });
