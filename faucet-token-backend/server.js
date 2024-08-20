@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 const cors = require('cors');
 app.use(cors());
 //app.use(cors({
-//    origin: 'http://localhost:3001', // Replace with your frontend URL
+//    origin: 'http://localhost:3001', // Specified port number for the frontend.
 //    methods: 'GET,POST',
 //    allowedHeaders: 'Content-Type'
 //  }));

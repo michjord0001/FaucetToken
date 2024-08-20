@@ -1,4 +1,3 @@
-// components/ClaimForm.tsx
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -10,11 +9,13 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ ethereumAddress }) => {
   const [cosmosHubAddress, setCosmosHubAddress] = useState<string>("");
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setTransactionHash(null);
+    setIsSubmitting(true); // Set submitting state to true
     console.log("Submitting: ", {
       ethereumAddress,
       cosmosHubAddress,
@@ -30,18 +31,18 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ ethereumAddress }) => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverError = error.response?.data?.error;
-        if (serverError === "The provided CosmosHub address is not a Simply Staking delegator.") {
-            setError("The provided CosmosHub address is not a Simply Staking delegator.");
-        }
-        else if (serverError === "Faucet claim already made for this CosmosHub address") {
+        if (serverError === "Faucet claim already made for this CosmosHub address") {
             setError("Faucet claim already made for this CosmosHub address.");
         } else {
-            setError("Failed to claim tokens. Please verify the CosmosHub address provided is a Simply Staking delegator.");
+            setError("Please verify the CosmosHub address provided is a Simply Staking delegator and MetaMask is connected.");
         }
-    } else {
+      } else {
         setError("An unexpected error occurred. Please try again.");
+      }
+      console.error("Failed to submit:", error);
+    } finally {
+      setIsSubmitting(false); // Reset submitting state to false
     }
-    console.error("Failed to submit:", error);    }
   };
 
   return (
@@ -53,15 +54,16 @@ const ClaimForm: React.FC<ClaimFormProps> = ({ ethereumAddress }) => {
           value={cosmosHubAddress}
           onChange={(e) => setCosmosHubAddress(e.target.value)}
           required
-          style={{ padding: 10, margin: 10 }}
+          style={{ padding: 10, margin: 10, width: 375 }}
         />
-        <button type="submit" style={{ padding: 10, margin: 10 }}>
+        <br />
+        <button type="submit" style={{ padding: 10, margin: 10 }} disabled={isSubmitting}>
           Submit
         </button>
       </form>
+      {isSubmitting && <p>Please wait...</p>} {}
       {transactionHash && (
         <div>
-          
           <p>Transaction successful! Hash: {" "}
             <a
               href={`https://sepolia.etherscan.io/tx/${transactionHash}`}

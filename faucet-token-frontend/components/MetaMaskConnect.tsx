@@ -1,48 +1,31 @@
 // components/MetaMaskConnect.tsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSDK } from "@metamask/sdk-react";
 
 interface MetaMaskConnectProps {
   onConnect: (account: string) => void;
+  onError: (error: string) => void;
 }
 
-const MetaMaskConnect: React.FC<MetaMaskConnectProps> = ({ onConnect }) => {
-  const [account, setAccount] = useState<string>();
-  const { sdk, connected, connecting, chainId } = useSDK();
-
-  useEffect(() => {
-    if (connected && account) {
-      onConnect(account);  // Pass the connected account to the parent
-    }
-  }, [connected, account]);
+const MetaMaskConnect: React.FC<MetaMaskConnectProps> = ({ onConnect, onError }) => {
+  const { sdk } = useSDK();
 
   const connect = async () => {
     try {
       const accounts = await sdk?.connect();
-      const userAccount = accounts?.[0];
-      setAccount(userAccount);
-      onConnect(userAccount); // Immediately pass the connected account to the parent
-    } catch (err) {
-      console.warn("Failed to connect:", err);
+      if (accounts && accounts.length > 0) {
+        const userAccount = accounts[0];
+        onConnect(userAccount); // Pass the connected account to the parent
+      } else {
+        onError("No accounts found");
+      }
+    } catch (error: any) {
+      console.warn("Failed to connect:", error);
+      onError("Failed to connect");
     }
   };
 
-  return (
-    <div style={{ padding: 20 }}>
-      <button
-        style={{ padding: 10, margin: 10 }}
-        onClick={connect}
-        disabled={connecting}
-      >
-        {connecting ? "Connecting..." : "Connect to MetaMask"}
-      </button>
-      {connected && (
-        <div>
-          <p>Connected Account: {account}</p>
-        </div>
-      )}
-    </div>
-  );
+  return <button onClick={connect}>Connect to MetaMask</button>;
 };
 
 export default MetaMaskConnect;
