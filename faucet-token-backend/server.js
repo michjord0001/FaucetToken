@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -7,7 +8,16 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+// Configuration to handle CORS requests from the frontend.
+const cors = require('cors');
+app.use(cors());
+//app.use(cors({
+//    origin: 'http://localhost:3001', // Replace with your frontend URL
+//    methods: 'GET,POST',
+//    allowedHeaders: 'Content-Type'
+//  }));
+  
+  app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
@@ -28,6 +38,9 @@ const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
 app.post('/faucet', async (req, res) => {
     const { ethereumAddress, cosmosHubAddress } = req.body;
+
+    // Logging to verify received data
+    console.log("Received request with:", { ethereumAddress, cosmosHubAddress });
 
     // Validate the CosmosHub address as a Simply Staking delegator
     try {
